@@ -20,7 +20,7 @@ class PriceCalculator
 //一个类适配器接口
 interface ITarget
 {
-    public function requester();//实现请求其他货币价格
+    public function requester();//实现修改汇率
 }
 
 //适配器 一边继承价格计算器 另一边实现转化
@@ -30,7 +30,7 @@ class EuroAdapter extends PriceCalculator implements ITarget
     
     public function __construct(){  
         $this->currency_name = "EUR";
-		$this->requester();
+        $this->requester();
     }
     
     public function requester(){
@@ -46,11 +46,11 @@ class Client
     public function getLoaclRequest(){ return $this->loacl_request; }
     public function getOtherRequest(){ return $this->other_request; }
     public function __construct(ITarget $other_request){
-        //举例使用原本类和适配器类来输出
-        $this->other_request = $other_request;
+        $this->other_request = $other_request;//保存一个实现 ITarget 修改汇率的新请求
         $this->loacl_request = new PriceCalculator();
     }
     
+    //参数PriceCalculator约束 原结构可运行
     public function showRequestPrice(PriceCalculator $request){
         $product_price = 2199.00;
         $service_price = 200.00;
@@ -66,3 +66,6 @@ $worker->showRequestPrice($worker->getLoaclRequest());
 $worker->showRequestPrice($worker->getOtherRequest());
 //RMB : 2399
 //EUR : 311.87
+
+//当需要新的货币时，只需要实现适配器 class xxxAdapter extends PriceCalculator implements ITarget{}
+// ITarget实现修改汇率 PriceCalculator继承保证原结构可运行
