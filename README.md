@@ -281,14 +281,17 @@ class RussiaMap implements IProduct
 - 建议：设计模式和单元测试中的构造函数，不应该做具体的工作
 - 用于批量产生对象，一次类实例化进行多次克隆。
 - 动态产生实例对象或clone一个对象
+
 ```php
 $className = "MyClass";
 $myObj = new $className($params);
 //等价于 $myObj = new MyClass($params);
 ```
+
 - PHP 可以使用原型模式创建一个具体类的实例，然后利用数据库相关数据克隆其余实例，返回一个对象数组出去。
 
 - 使用原型，批量生成若干个机器人玩家，玩家有两类武器  [RobotsWithWeapons.php](https://github.com/ParrySMS/DesignPatterns/blob/master/RobotsWithWeapons.php)
+
 ```php
 <?php
 //武器原型以及实现
@@ -376,8 +379,8 @@ class Robot extends IPlayerPrototype
     public function setName($name){
     	$this->name = $name;
     }
-        
-    function __clone(){
+    function __clon        
+e(){
 		echo 'NOTE:Robot __clone: '.PHP_EOL;
 	}
 }
@@ -430,9 +433,7 @@ print_r($robots);
 
 - 货币转化器：假设增加新的币种  [EuroAdapter.php](https://github.com/ParrySMS/DesignPatterns/blob/master/EuroAdapter.php)
 
-
-  ![](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/AdapterExtend.jpg)
-
+![](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/AdapterExtend.jpg)
 
 ```php
 <?php
@@ -535,8 +536,9 @@ $worker = new Client($product_price,$service_price);
 
 ### 使用组合的对象适配器模式
 
+- [WeaponAdapter.php](https://github.com/ParrySMS/DesignPatterns/blob/master/WeaponAdapter.php)
 
-  ![](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/AdapterOverride.jpg)
+![](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/AdapterOverride.jpg)
 
 
 ```php
