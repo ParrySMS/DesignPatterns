@@ -1,4 +1,5 @@
 <?php
+
 //总价计算器
 class PriceCalculator
 {
@@ -7,8 +8,9 @@ class PriceCalculator
     private $service_price;
     public $exchange_rate = 1;
     public $currency_name = "RMB";
-    
-    public function requestCalculator($product_price,$service_price){
+
+    public function requestCalculator($product_price, $service_price)
+    {
         $this->product_price = $product_price;
         $this->service_price = $service_price;
         $this->total_price = $product_price + $service_price;
@@ -26,8 +28,9 @@ class EuroCalculator
     private $tax_rate = 0.08;
     public $exchange_rate = 1;
     public $currency_name = "EUR";
-    
-    public function requestCalculator($product_price,$service_price){
+
+    public function requestCalculator($product_price, $service_price)
+    {
         $this->product_price = $product_price;
         $this->service_price = $service_price;
         $this->total_price = $product_price + $service_price;
@@ -45,14 +48,16 @@ interface ITarget
 
 //适配器 一边继承价格计算器 另一边实现转化
 class EuroAdapter extends EuroCalculator implements ITarget
-{	
+{
     public $rate = 0.13;
-    
-    public function __construct(){  
+
+    public function __construct()
+    {
         $this->rateRequester();
     }
-    
-    public function rateRequester(){
+
+    public function rateRequester()
+    {
         $this->exchange_rate = $this->rate;
         return $this->exchange_rate;
     }
@@ -62,32 +67,35 @@ class Client
 {
     public $product_price;
     public $service_price;
-    
-    public function __construct($product_price,$service_price){
+
+    public function __construct($product_price, $service_price)
+    {
         $this->product_price = $product_price;
         $this->service_price = $service_price;
-        $this->showLocalRequestPrice(new PriceCalculator());  
+        $this->showLocalRequestPrice(new PriceCalculator());
         $this->showOtherRequestPrice(new EuroAdapter());
     }
-    
-    public function showLocalRequestPrice(PriceCalculator $request){
-        echo 'showLocal--'.$request->currency_name.' : ';
+
+    public function showLocalRequestPrice(PriceCalculator $request)
+    {
+        echo 'showLocal--' . $request->currency_name . ' : ';
         echo $request->requestCalculator($this->product_price, $this->service_price);
         echo PHP_EOL;
     }
-    
+
     //ITarget可更换为其他的实现
-    public function showOtherRequestPrice(ITarget $other_request){       
-        echo 'showOther--'.$other_request->currency_name.' : ';
+    public function showOtherRequestPrice(ITarget $other_request)
+    {
+        echo 'showOther--' . $other_request->currency_name . ' : ';
         echo $other_request->requestCalculator($this->product_price, $this->service_price);
-        echo PHP_EOL;        
-    }  
+        echo PHP_EOL;
+    }
 }
 
 //调用
 $product_price = 2199.00;
 $service_price = 200.00;
-$worker = new Client($product_price,$service_price);
+$worker = new Client($product_price, $service_price);
 
 //showLocal--RMB : 2399
 //showOther--EUR : 336.8196
