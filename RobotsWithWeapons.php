@@ -10,11 +10,6 @@ abstract class IWeaponPrototype
     public $durability;
 
     abstract function __clone();
-
-    protected function randFloat($min, $max)
-    {
-        return rand() / getrandmax() * ($max - $min) + $min;
-    }
 }
 
 class Firearm extends IWeaponPrototype
@@ -29,6 +24,11 @@ class Firearm extends IWeaponPrototype
         $this->modifiedTimes = 0;
         $this->durability = 100;
         echo 'NOTE:Firearm __construct' . PHP_EOL;
+    }
+
+    private function randFloat($min, $max)
+    {
+        return rand() / getrandmax() * ($max - $min) + $min;
     }
 
     //克隆的同时调整一个随机浮动的耐久度
@@ -62,7 +62,7 @@ class Knife extends IWeaponPrototype
     }
 }
 
-//玩家原型以及实现
+//玩家原型以及实现gi
 abstract class IPlayerPrototype
 {
     protected $weaponEquipedOnButton1;
@@ -70,16 +70,17 @@ abstract class IPlayerPrototype
     protected $HP;
     protected $name;
 
+    abstract public function setWeaponEquipedOnButton1(IWeaponPrototype $weaponOnBtn1);
+
+    abstract public function setWeaponEquipedOnButton3(IWeaponPrototype $weaponOnBtn3);
+
+    abstract public function setName($name);
+
     abstract function __clone();
 }
 
 class Robot extends IPlayerPrototype
 {
-    protected $weaponEquipedOnButton1;
-    protected $weaponEquipedOnButton3;
-    protected $HP;
-    protected $name;
-
     public function __construct(IWeaponPrototype $weaponOnBtn1, IWeaponPrototype $weaponOnBtn3)
     {
         $this->weaponEquipedOnButton1 = $weaponOnBtn1;
