@@ -8,6 +8,9 @@ abstract class IWeaponPrototype
     public $modifiedTimes;
     public $durability;
     abstract function __clone();
+	protected function randFloat($min,$max){
+		return rand()/getrandmax()*($max-$min)+$min;
+	}
 }
 
 class Firearm extends IWeaponPrototype
@@ -21,8 +24,14 @@ class Firearm extends IWeaponPrototype
 		$this->durability = 100;
 		echo 'NOTE:Firearm __construct'.PHP_EOL;
 	}
-	
-	function __clone(){}
+	//克隆的同时调整一个随机浮动的耐久度
+	function __clone(){
+        $this->durability *= $this->randFloat(0.85,2);
+		$this->durability = intval($this->durability);
+		echo 'NOTE:Firearm __clone: ';
+		echo 'new durability:'.$this->durability.PHP_EOL;
+		
+    }
 }
 
 class Knife extends IWeaponPrototype
@@ -36,7 +45,9 @@ class Knife extends IWeaponPrototype
 		$this->durability = 100;
 		echo 'NOTE:Knife __construct'.PHP_EOL;
 	}
-	function __clone(){}
+	function __clone(){
+		echo 'NOTE:Knife __clone'.PHP_EOL;
+	}
 }
 
 //玩家原型以及实现
@@ -73,10 +84,11 @@ class Robot extends IPlayerPrototype
     public function setName($name){
     	$this->name = $name;
     }
-    
-    function __clone(){}
+        
+    function __clone(){
+		echo 'NOTE:Robot __clone: '.PHP_EOL;
+	}
 }
-
 //创建若干机器人
 class Client
 {
@@ -90,25 +102,20 @@ class Client
 		$this->robot = new Robot($this->firearm,$this->knife);
 	}
 	
-	public function createRobot($robotNum = 8){	  
+	public function createRobot($robotNum = 3){	  
 		$robots = [];
 		for($robotID = 0;$robotID < $robotNum;$robotID++){
-			unset($cloneFirearm);
     		$cloneFirearm = clone $this->firearm;
-    		$cloneFirearm->durability = intval($this->randFloat(0.85,2) * $cloneFirearm->durability); 
     		$robotName = 'robotPlayer'.$robotID;
     		
-    		unset($cloneRobot);
-    		$cloneRobot = clone $this->robot; 		
-    		$this->setRobot($cloneRobot,$robotName,$cloneFirearm);	
+            $cloneRobot = clone $this->robot;
+            $this->setRobot($cloneRobot,$robotName,$cloneFirearm);	
             $robots[] = $cloneRobot;
     	}
     	return $robots; 
 	}
-	private function randFloat($min,$max){
-		return rand()/getrandmax()*($max-$min)+$min;
-	}
-	private function setRobot(IPlayerPrototype  &$robot,$name,IWeaponPrototype &$weaponOnBtn1){
+    
+	private function setRobot(IPlayerPrototype $robot,$name,IWeaponPrototype $weaponOnBtn1){
 		$robot->setName($name);
 		$robot->setWeaponEquipedOnButton1($weaponOnBtn1);
 	}
