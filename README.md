@@ -749,11 +749,22 @@ $worker = new Client();
 // shield removing
 ```
 
-- 两种适配器模式 Adapter 小结
+- 两种适配器模式 Adapter 小结: 用来处理不兼容的接口
 
 ![](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/Adapter.jpg)
 
 
 
-### 装饰器 
+### 装饰器模式 Decorator 
 
+- 具体组件Component实现IComponent接口。
+
+- 装饰器(Decorator)可以包装一个具体组件实例对象(Component)。
+
+- 装饰器相当于具体装饰的接口，装饰器继承IComponent但不实现，只用于维护IComponent引用在具体装饰中实现。
+
+- 具体装饰继承装饰器Decorator，构造函数里接收一个IComponent，用来实现组件的新装饰功能。
+
+- 适配器和装饰器都可以称为 `包装器 Wrapper` 
+
+//P150 todo: IWeapon做接口 MainWeapon SubWeapon 做组件 Decorator装饰器来实现枪支升级后的新效果
