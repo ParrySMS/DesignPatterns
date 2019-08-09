@@ -4,22 +4,26 @@
 //use abstract class but not interface for these elements in common
 abstract class IWeapon
 {
+    public $color;
     protected $bullet;
     protected $damage;
     protected $sound;
-
+    abstract public function setColor($color);
     abstract public function MouseLeftClickAttack();
-
     abstract public function MouseRightClickAttack();
 }
 
 abstract class WeaponsDecorator extends IWeapon
 {
+    //some regular function not changed is able to implement in Decorator
+    public function setColor($color){
+        $this->color =  $color;
+    }
     abstract public function MouseLeftClickAttack();
-
     abstract public function MouseRightClickAttack();
 }
 
+// MainWeapon and SubWeapon are two different Component
 class MainWeapon extends IWeapon
 {
     public function __construct($bullet = 100, $damage = 75, $sound = 135)
@@ -28,10 +32,13 @@ class MainWeapon extends IWeapon
         $this->bullet = $bullet;
         $this->damage = $damage;
         $this->sound = $sound;
+        $this->setColor();
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to aim
     }
-
+    public function setColor($color = 'black'){
+        $this->color =  $color;
+    }
     public function MouseLeftClickAttack()
     {
         if ($this->bullet > 0) {
@@ -62,10 +69,15 @@ class SubWeapon extends IWeapon
         $this->damage = $damage;
         $this->sound = SOUND_BASIC;
         $this->isUsingSilencer = $isUsingSilencer;
+        $this->setColor();
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to use/cancel silencer
         $this->MouseLeftClickAttack();    //shoot again
         $this->MouseRightClickAttack();
+    }
+
+    public function setColor($color = 'silver'){
+        $this->color =  $color;
     }
 
     public function MouseLeftClickAttack()
@@ -78,19 +90,27 @@ class SubWeapon extends IWeapon
             echo 'need to reload' . PHP_EOL;
         }
     }
+
     public function MouseRightClickAttack()
     {
-        if($this->isUsingSilencer){
+        if ($this->isUsingSilencer) {
             echo 'removing a silencer' . PHP_EOL;
             $this->sound = SOUND_BASIC;
-        }else{
+        } else {
             echo 'attaching a silencer' . PHP_EOL;
             $this->sound = SOUND_WITH_SILENCER;
         }
     }
 }
 
-class MainFireBulletsWeapon extends WeaponsDecorator{
+class MainFireBulletsWeapon extends WeaponsDecorator
+{
+    protected $fireBullet;
+    public function __construct()
+    {
+        $this->fireBullet = 100;
+    }
+
     public function MouseLeftClickAttack()
     {
         // TODO: Implement MouseLeftClickAttack() method.
@@ -102,7 +122,8 @@ class MainFireBulletsWeapon extends WeaponsDecorator{
     }
 }
 
-class MainAutoReloadingWeapon extends WeaponsDecorator{
+class MainAutoReloadingWeapon extends WeaponsDecorator
+{
     public function MouseLeftClickAttack()
     {
         // TODO: Implement MouseLeftClickAttack() method.
