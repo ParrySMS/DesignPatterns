@@ -152,12 +152,13 @@ class Graph implements IProduct
 		$height = '274';
 		$this->imgStyle = compact('padding', 'src', 'align', 'width', 'height');
     }
-    public function getProperties(){
-    	
-        $this->msgForGraph = "<img style='{$imgStyle['padding']}'; 
-        src='{$imgStyle['src']}' align='{$imgStyle['align']}'
-        width='{$imgStyle['width']}' height='{$imgStyle['height']}'
-        >" ;
+    public function getProperties(){	
+        $this->msgForGraph .= "<img style='{$this->imgStyle['padding']}' ";
+        $this->msgForGraph .= "src='{$this->imgStyle['src']}' "; 
+        $this->msgForGraph .= "align='{$this->imgStyle['align']}' "; 
+        $this->msgForGraph .= "width='{$this->imgStyle['width']}' "; 
+        $this->msgForGraph .= "height='{$this->imgStyle['height']}' "; 
+        $this->msgForGraph .= '/>';
         return $this->msgForGraph;
     }
 }
@@ -170,6 +171,12 @@ class Graph implements IProduct
   
 
 ```php
+<?php
+//产品接口
+interface IProduct
+{
+    public function getProperties();
+}
 //产品实现接口
 class ChinaMap implements IProduct
 {
@@ -185,19 +192,18 @@ class ChinaMap implements IProduct
     
     //两个产品内容放在一起实现
     public function getProperties(){      
-        $this->msgForGraph .= "<img 
-        style='{$imgStyle['padding']}'; 
-        src='{$imgStyle['src']}' 
-        align='{$imgStyle['align']}'
-        width='{$imgStyle['width']}' 
-        height='{$imgStyle['height']}'
-        >" ;
+        $this->msgForGraph .= "<img style='{$this->imgStyle['padding']}' ";
+        $this->msgForGraph .= "src='{$this->imgStyle['src']}' "; 
+        $this->msgForGraph .= "align='{$this->imgStyle['align']}' "; 
+        $this->msgForGraph .= "width='{$this->imgStyle['width']}' "; 
+        $this->msgForGraph .= "height='{$this->imgStyle['height']}' "; 
+        $this->msgForGraph .= '/>';
         
         $this->msgForGraph .= <<<CHINAMAP
-		<header>CHINA-MAP</header> <p> Introduction of China </p>
-CHINAMAP        
-
-        return $this->mfg;
+		<header> CHINA-MAP </header>
+		<p> Introduction of China </p>
+CHINAMAP;        
+        return $this->msgForGraph;
     }
 }
 
@@ -217,7 +223,7 @@ abstract class Creator
 class ChinaMapFactory extends Creator
 {
 	private $countryMap;
-    protected function factoryMethod(IProduct $product){
+    public function factoryMethod(IProduct $product){
         $this->countryMap = $product;
         return $this->countryMap->getProperties();
     }
@@ -757,6 +763,7 @@ $worker = new Client();
 
 ### 装饰器模式 Decorator 
 
+- **俄罗斯套娃**来套对象加东西
 - 具体组件Component实现IComponent接口。
 - 装饰器(Decorator)可以包装一个具体组件实例对象(Component)。
 - 装饰器相当于具体装饰的接口，装饰器继承IComponent但不实现，只用于维护IComponent引用在具体装饰中实现。
@@ -1036,6 +1043,13 @@ $worker = new Client(new SubWeapon(3));
 
 - 考虑对象与类之间的通信，互相合作来完成任务
 
-### 模板方法模式 Template Method
+### 模板方法模式  Template Method
 
-
+- 使用抽象类中的一个具体方法，确定其他抽象方法的执行顺序。（类似Controllor）
+- 具体实现交给具体类
+- 适用于已经明确具体步骤，而步骤可抽象出多种实现的情况
+- 使用模板方法可以控制子类拓展（钩子操作）
+- 子类可以拓展或重新实现算法的可变部分，但是不能改变模板方法的控制流。
+- 好莱坞原则（Hollywood Principle）: 反向控制结构概念，父类调用子类的操作，而子类不掉用父类。尽管实例化了一个具体类，但是调用的是父类的一个具体方法。这个具体方法里，父类会去调用子类的一些具体实现。
+- 幼儿园原则（Kindergarden Principle）: 父类建立顺序，子类按照各自实现完成操作，但不能改变控制流。
+- 模板方法与工厂方式的结合 
