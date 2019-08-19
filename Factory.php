@@ -26,10 +26,9 @@ class ChinaMap implements IProduct
         $this->msgForGraph .= "height='{$this->imgStyle['height']}' "; 
         $this->msgForGraph .= '/>';
         
-        $this->msgForGraph .= <<<CHINAMAP
-		<header> CHINA-MAP </header>
-		<p> Introduction of China </p>
-CHINAMAP;        
+        $this->msgForGraph .= '<header> CHINA-MAP </header>';
+        $this->msgForGraph .='<p> Introduction of China </p>';
+
         return $this->msgForGraph;
     }
 }
@@ -39,9 +38,9 @@ abstract class Creator
 {
     protected abstract function factoryMethod(IProduct $product);
     public function startFactory(IProduct $productNow){
-        $chinaMapProduct = $productNow;
+        $mapProduct = $productNow;
         //do sth with params
-        $msgForGraph = $this->factoryMethod($chinaMapProduct);
+        $msgForGraph = $this->factoryMethod($mapProduct);
         return $msgForGraph;
     }
 }
