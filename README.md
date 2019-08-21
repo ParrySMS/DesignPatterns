@@ -199,10 +199,9 @@ class ChinaMap implements IProduct
         $this->msgForGraph .= "height='{$this->imgStyle['height']}' "; 
         $this->msgForGraph .= '/>';
         
-        $this->msgForGraph .= <<<CHINAMAP
-		<header> CHINA-MAP </header>
-		<p> Introduction of China </p>
-CHINAMAP;        
+        $this->msgForGraph .= '<header> CHINA-MAP </header>';
+        $this->msgForGraph .='<p> Introduction of China </p>';
+
         return $this->msgForGraph;
     }
 }
@@ -1052,4 +1051,79 @@ $worker = new Client(new SubWeapon(3));
 - 子类可以拓展或重新实现算法的可变部分，但是不能改变模板方法的控制流。
 - 好莱坞原则（Hollywood Principle）: 反向控制结构概念，父类调用子类的操作，而子类不掉用父类。尽管实例化了一个具体类，但是调用的是父类的一个具体方法。这个具体方法里，父类会去调用子类的一些具体实现。
 - 幼儿园原则（Kindergarden Principle）: 父类建立顺序，子类按照各自实现完成操作，但不能改变控制流。
-- 模板方法与工厂方式的结合 
+- 模板方法与工厂方式的结合 [TemplateMethodFactory.php](https://github.com/ParrySMS/DesignPatterns/blob/master/TemplateMethodFactory.php)
+
+
+
+![1566196251149](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/TemplateMethodFactory.png)
+
+
+
+
+```php
+<?php
+require "./Factory.php";
+/**
+ * need to comments out the line with
+ *    //$worker = new Client();
+ * in Factory.php
+ **/
+// TMBase implement the templateMethod()
+abstract class TMBase
+{
+    protected $msgForGraph;
+    protected $msgForTM;
+
+    public function templateMethod()
+    {
+        echo 'do sth 1:'. PHP_EOL;;
+        $this->addCountryMap();
+        echo 'do sth 2:'. PHP_EOL;;
+        $this->addMsg();
+    }
+
+    //implemented by other class
+    protected abstract function addCountryMap();
+
+    protected abstract function addMsg();
+}
+
+class TMFactory extends TMBase
+{
+    protected function addCountryMap()
+    {
+        //Factory to produce <img /> and text
+        $chinaMapFactory = new ChinaMapFactory();
+        echo $chinaMapFactory->factoryMethod(new ChinaMap());
+        echo PHP_EOL;
+    }
+
+    protected function addMsg()
+    {
+        echo 'able to add other Factory to use [ Factory->factoryMethod(new Product()) ]' . PHP_EOL;
+    }
+
+}
+
+
+class TMClient
+{
+    public function __construct()
+    {
+        $TMFactory = new TMFactory();
+        // the order of execution is defined in templateMethod()
+        // just excute it
+        $TMFactory->templateMethod();
+    }
+}
+
+$clinet = new TMClient();
+//do sth 1:
+//<img style='padding: 10px 10px 10px 0px' src='xxxx.png' align='left' width='256' height='274' /><header> CHINA-MAP </header><p> Introduction of China </p>
+//do sth 2:
+//able to add other Factory to use [ Factory->factoryMethod(new Product()) ]
+```
+
+
+- 模板方法设计模式中的钩子
+//todo
