@@ -1053,12 +1053,7 @@ $worker = new Client(new SubWeapon(3));
 - 幼儿园原则（Kindergarden Principle）: 父类建立顺序，子类按照各自实现完成操作，但不能改变控制流。
 - 模板方法与工厂方式的结合 [TemplateMethodFactory.php](https://github.com/ParrySMS/DesignPatterns/blob/master/TemplateMethodFactory.php)
 
-
-
 ![1566196251149](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/TemplateMethodFactory.png)
-
-
-
 
 ```php
 <?php
@@ -1126,4 +1121,9 @@ $clinet = new TMClient();
 
 
 - 模板方法设计模式中的钩子
-//todo
+	- 对于一些特殊情况可以不执行某些步骤或执行其他内容
+	- 将一个方法作为模板方法的一部分，但是用来处理例外情况（可能执行，也可能不执行）
+	- 尽管子类可以改变钩子的行为，但仍要遵循定义的模板方法顺序
+	- 某个钩子方法, 用一些条件来控制具体执行内容。
+	- 在所有的钩子操作中，必须要警告控制流，说明当前状态有不同情况发生，不是执行默认的控制流。
+
