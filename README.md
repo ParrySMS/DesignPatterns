@@ -1259,7 +1259,11 @@ $worker = new Client(new JingDongShop());
 
 - 所有状态模式都需要一个参与者来跟踪对象所处的状态（当前状态）
 
-- 系统需要知道可通过哪些迁移进入到其他状态（状态转移的下一步）
+- 系统需要知道可通过哪些迁移进入到其他状态（状态转移的下一步），下文例中使用 Context 类 (表示上下文情境)
 	
-- 	
+- 可以使用状态转移图确认具体流程	
+
+- 例1 灯泡状态 [BulbState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/BulbState.php)
+
+- 例2 棋盘移动 //todo: []()
 
