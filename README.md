@@ -1053,7 +1053,7 @@ $worker = new Client(new SubWeapon(3));
 - 幼儿园原则（Kindergarden Principle）: 父类建立顺序，子类按照各自实现完成操作，但不能改变控制流。
 - 模板方法与工厂方式的结合 [TemplateMethodFactory.php](https://github.com/ParrySMS/DesignPatterns/blob/master/TemplateMethodFactory.php)
 
-![1566196251149](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/TemplateMethodFactory.png)
+![TemplateMethodFactory](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/TemplateMethodFactory.png)
 
 ```php
 <?php
@@ -1263,7 +1263,25 @@ $worker = new Client(new JingDongShop());
 	
 - 可以使用状态转移图确认具体流程	
 
-- 例1 灯泡状态 [BulbState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/BulbState.php)
+- 例1 灯泡状态 [BulbContextState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/BulbContextState.php)
 
-- 例2 棋盘移动 //todo: []()
+- 例2 游戏角色 [PlayerContextState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/PlayerContextState.php)
+
+- 最开始需要加载全部可能状态，运行之后只是做状态转移赋值。（状态类可能有冗余，但是状态转移会简化）
+
+- 一个个状态单纯用作存储用，转换行为在各个状态里有定义，但是触发是用 Context 上下文情境里的方法触发的，所以调用逻辑在 Context 里。
+
+- 可以根据情况再去分类抽象掉 IState 接口，不然如果 state状态实例 可能会有很多不实现的空方法（因为其他的状态不一定都下步可达）。
+
+```
+[initial state] ---> wait 5 sec ---> [playing state]
+[playing state] ---> check health, if 0 ---> [reviving state]
+[reviving state] ---> wait 3 sec ---> [protected state]
+[protected state] ---> wait 3 sec ---> [playing state]
+```
+
+![contextState](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/contextState.png)
+
+
+### MySQL相关设计模式
 

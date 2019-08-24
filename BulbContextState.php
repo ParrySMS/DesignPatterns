@@ -140,22 +140,22 @@ class BulbContext
 {
     public $luminance;
 
-    private $onState;
-    private $offState;
-    private $brightestState;
-    private $flashState;
+    private $on_state;
+    private $off_state;
+    private $brightest_state;
+    private $flash_state;
 
-    private $currentState;
+    private $current_state;
 
     public function __construct()
     {
         // init all state
-        $this->onState = new OnState($this);
-        $this->offState = new OffState($this);
-        $this->brightestState = new BrightestState($this);
-        $this->flashState = new FlashState($this);
+        $this->on_state = new OnState($this);
+        $this->off_state = new OffState($this);
+        $this->brightest_state = new BrightestState($this);
+        $this->flash_state = new FlashState($this);
         // default state is offState
-        $this->currentState = $this->offState;
+        $this->current_state = $this->off_state;
         $this->luminance = '0%';
         $this->getSateInfo();
     }
@@ -163,74 +163,74 @@ class BulbContext
     // use trigger methods
     public function turnOn()
     {
-        $this->currentState->turnOn();
+        $this->current_state->turnOn();
         $this->luminance = '80%';
         $this->getSateInfo();
     }
 
     public function turnOff()
     {
-        $this->currentState->turnOff();
+        $this->current_state->turnOff();
         $this->luminance = '0%';
         $this->getSateInfo();
     }
 
     public function turnBrightest()
     {
-        $this->currentState->turnBrightest();
+        $this->current_state->turnBrightest();
         $this->luminance = '100%';
         $this->getSateInfo();
     }
 
     public function convertFlash()
     {
-        $this->currentState->convertFlash();
+        $this->current_state->convertFlash();
         $this->getSateInfo();
     }
 
     public function getSateInfo()
     {
         echo "luminance:$this->luminance".PHP_EOL;
-        echo 'currentState:'.get_class($this->currentState).PHP_EOL;
+        echo 'currentState:'.get_class($this->current_state).PHP_EOL;
     }
 
     //// Getter Setter
-    public function setCurrentState(IState $currentState)
+    public function setCurrentState(IState $current_state)
     {
-        $this->currentState = $currentState;
+        $this->current_state = $current_state;
     }
 
 
     public function getOnState()
     {
-        return $this->onState;
+        return $this->on_state;
     }
 
     public function getOffState()
     {
-        return $this->offState;
+        return $this->off_state;
     }
 
     public function getBrightestState()
     {
-        return $this->brightestState;
+        return $this->brightest_state;
     }
 
     public function getFlashState()
     {
-        return $this->flashState;
+        return $this->flash_state;
     }
 
 }
 
 class Client {
     private $bulb;
-    private $funcList;
+    private $func_list;
 
     public function __construct(BulbContext $bulb, $rand_times = 0)
     {
         $this->bulb = $bulb;
-        $this->funcList = ['turnOn','turnBrightest','convertFlash','turnOff'];
+        $this->func_list = ['turnOn','turnBrightest','convertFlash','turnOff'];
         if($rand_times === 0){
             $this->seqTurn();
         }else {
@@ -242,13 +242,13 @@ class Client {
 
     private function randTurn(){
         $rand_op = intval($this->randInt(1,4));
-        $func = $this->funcList[$rand_op-1];
+        $func = $this->func_list[$rand_op-1];
         echo PHP_EOL."operation:$func".PHP_EOL;
         $this->bulb->$func();
     }
 
     private function seqTurn(){
-        foreach ($this->funcList as $func){
+        foreach ($this->func_list as $func){
             echo PHP_EOL."operation:$func".PHP_EOL;
             $this->bulb->$func();
         }
