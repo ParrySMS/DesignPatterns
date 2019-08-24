@@ -25,7 +25,7 @@ interface IState
 class OffState implements IState
 {
     private $bulb;
-    public function __construct(Bulb $bulb)
+    public function __construct(BulbContext $bulb)
     {
         $this->bulb = $bulb;
     }
@@ -48,7 +48,7 @@ class OffState implements IState
 class OnState implements IState
 {
     private $bulb;
-    public function __construct(Bulb $bulb)
+    public function __construct(BulbContext $bulb)
     {
         $this->bulb = $bulb;
     }
@@ -78,7 +78,7 @@ class OnState implements IState
 class BrightestState implements IState
 {
     private $bulb;
-    public function __construct(Bulb $bulb)
+    public function __construct(BulbContext $bulb)
     {
         $this->bulb = $bulb;
     }
@@ -106,7 +106,7 @@ class BrightestState implements IState
 class FlashState implements IState
 {
     private $bulb;
-    public function __construct(Bulb $bulb)
+    public function __construct(BulbContext $bulb)
     {
         $this->bulb = $bulb;
     }
@@ -136,7 +136,7 @@ class FlashState implements IState
  * Class Bulb
  * Bulb is able to switch itself to diff state
  */
-class Bulb
+class BulbContext
 {
     public $luminance;
 
@@ -227,7 +227,7 @@ class Client {
     private $bulb;
     private $funcList;
 
-    public function __construct(Bulb $bulb, $rand_times = 0)
+    public function __construct(BulbContext $bulb, $rand_times = 0)
     {
         $this->bulb = $bulb;
         $this->funcList = ['turnOn','turnBrightest','convertFlash','turnOff'];
@@ -260,7 +260,7 @@ class Client {
     }
 }
 
-$worker = new Client(new Bulb());
+$worker = new Client(new BulbContext());
 //luminance:0%
 //currentState:OffState
 //
