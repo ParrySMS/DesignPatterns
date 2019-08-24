@@ -1,11 +1,17 @@
 # Learning PHP Design Patterns (O'Reilly)
 
+## 简洁版本：[README_NO_CODE.md](https://github.com/ParrySMS/DesignPatterns/blob/master/README_NO_CODE.md)
+
+- 长代码块放置外链
+
+- 由文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
+
 ## PART1 基础
 
 - 单一职责
 
 - 保证调试中报告错误
-```php
+```
   ini_set("display_errors",1);
   ERROR_REPORTING(E_ALL);
 ```
@@ -14,7 +20,7 @@
 
 - 接口不能包含变量，但可以有常量
 
-```php
+```
   interface IConnectInfo
   {
       const HOST = "localhost";
@@ -34,17 +40,19 @@
 
 - 使用接口做类型约束实现宽松绑定
 
-```php
+```
 public function impltFunc(IConnectInfo $connectInfo){
       $connectInfo->otherfunc();//子类自己拓展的方法
   }
 ```
 
 - 按照接口编程，解耦实现
+
 - 对象不要一直继承拓展，应当使用组合
+
 - UML关系
-  - 相识:：包含引用
-  - 聚合：多个对象组合作用完成
+  - 相识: 包含引用
+  - 聚合: 多个对象组合作用完成
   - 继承和实现
   - 创建
   
@@ -275,19 +283,24 @@ class RussiaMap implements IProduct
 }
 ```
 
-
+- 工厂模式示例代码: [Factory.php](https://github.com/ParrySMS/DesignPatterns/blob/master/Factory.php)
 
 ### 原型设计模式 Prototype
 
 - 新对象通过复制原型实例化的具体类来创建，目的是减少实例化对象的开销
+
 - PHP有内置的 `__clone()` 方法，这个方法不能直接调用，具体用法如下：
 `$another = clone $someInstance`
+
 - 克隆会替对应的类实例化另一个实例，不会启动构造函数
+
 - 建议：设计模式和单元测试中的构造函数，不应该做具体的工作
+
 - 用于批量产生对象，一次类实例化进行多次克隆。
+
 - 动态产生实例对象或clone一个对象
 
-```php
+```
 $className = "MyClass";
 $myObj = new $className($params);
 //等价于 $myObj = new MyClass($params);
@@ -763,13 +776,21 @@ $worker = new Client();
 ### 装饰器模式 Decorator 
 
 - **俄罗斯套娃**来套对象加东西
+
 - 具体组件Component实现IComponent接口。
+
 - 装饰器(Decorator)可以包装一个具体组件实例对象(Component)。
+
 - 装饰器相当于具体装饰的接口，装饰器继承IComponent但不实现，只用于维护IComponent引用在具体装饰中实现。
+
 - 具体装饰继承装饰器Decorator，构造函数里接收一个IComponent，用来实现组件的新装饰功能。
+
 - 适配器和装饰器都可以称为 `包装器 Wrapper` 
+
 - use abstract class but not interface for these elements in common
+
 - some regular function not changed is able to implement in Decorator
+
 - save the `$weapon` instance when constructing and then add more features. Most features using var from `$this->weapon` 
 
 - [WeaponDecorator.php](https://github.com/ParrySMS/DesignPatterns/blob/master/WeaponDecorator.php)
@@ -1045,12 +1066,19 @@ $worker = new Client(new SubWeapon(3));
 ### 模板方法模式  Template Method
 
 - 使用抽象类中的一个具体方法，确定其他抽象方法的执行顺序。（类似Controllor）
+
 - 具体实现交给具体类
+
 - 适用于已经明确具体步骤，而步骤可抽象出多种实现的情况
+
 - 使用模板方法可以控制子类拓展（钩子操作）
+
 - 子类可以拓展或重新实现算法的可变部分，但是不能改变模板方法的控制流。
+
 - 好莱坞原则（Hollywood Principle）: 反向控制结构概念，父类调用子类的操作，而子类不掉用父类。尽管实例化了一个具体类，但是调用的是父类的一个具体方法。这个具体方法里，父类会去调用子类的一些具体实现。
+
 - 幼儿园原则（Kindergarden Principle）: 父类建立顺序，子类按照各自实现完成操作，但不能改变控制流。
+
 - 模板方法与工厂方式的结合 [TemplateMethodFactory.php](https://github.com/ParrySMS/DesignPatterns/blob/master/TemplateMethodFactory.php)
 
 ![TemplateMethodFactory](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/TemplateMethodFactory.png)
@@ -1265,13 +1293,295 @@ $worker = new Client(new JingDongShop());
 
 - 例1 灯泡状态 [BulbContextState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/BulbContextState.php)
 
+```php
+<?php
+/**
+ * Created by PhpStorm.
+ * User: L
+ * Date: 2019-8-23
+ * Time: 18:40
+ */
+
+
+/**
+ * Interface IState
+ * show all possible state triggers
+ */
+interface IState
+{
+    public function turnOn();
+    public function turnOff();
+    public function turnBrightest();
+    public function convertFlash();
+}
+
+/**
+ * define all state implement class
+ */
+class OffState implements IState
+{
+    private $bulb;
+    public function __construct(BulbContext $bulb)
+    {
+        $this->bulb = $bulb;
+    }
+
+    //// Only this trigger available when a bulb in OffState
+    public function turnOn()
+    {
+        echo 'light on' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getOnState());
+    }
+    public function turnBrightest(){
+        echo 'please swirch the light on first' . PHP_EOL;
+    }
+
+    //// null implement
+    public function turnOff(){}
+    public function convertFlash(){}
+}
+
+class OnState implements IState
+{
+    private $bulb;
+    public function __construct(BulbContext $bulb)
+    {
+        $this->bulb = $bulb;
+    }
+
+    //// null implement
+    public function turnOn(){}
+
+    public function turnOff()
+    {
+        echo 'light off' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getOffState());
+    }
+
+    public function turnBrightest()
+    {
+        echo 'light to brightest' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getBrightestState());
+    }
+
+    public function convertFlash()
+    {
+        echo 'light flashing' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getFlashState());
+    }
+}
+
+class BrightestState implements IState
+{
+    private $bulb;
+    public function __construct(BulbContext $bulb)
+    {
+        $this->bulb = $bulb;
+    }
+
+    public function turnOn(){}
+
+    public function turnOff()
+    {
+        echo 'light from brightest to dark .... light off' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getOffState());
+    }
+
+    public function turnBrightest()
+    {
+        echo 'light allready brightest' . PHP_EOL;
+    }
+
+    public function convertFlash()
+    {
+        echo 'light flashing with brightest light' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getFlashState());
+    }
+}
+
+class FlashState implements IState
+{
+    private $bulb;
+    public function __construct(BulbContext $bulb)
+    {
+        $this->bulb = $bulb;
+    }
+
+    public function turnOn(){}
+
+    public function turnOff()
+    {
+        echo 'light from flashing to dark .... light off' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getOffState());
+    }
+
+    public function turnBrightest()
+    {
+        echo 'light seem brighter gradually .... brightest' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getBrightestState());
+    }
+
+    public function convertFlash()
+    {
+        echo 'no flashing' . PHP_EOL;
+        $this->bulb->setCurrentState($this->bulb->getOnState());
+    }
+}
+
+/**
+ * Class Bulb
+ * Bulb is able to switch itself to diff state
+ */
+class BulbContext
+{
+    public $luminance;
+
+    private $on_state;
+    private $off_state;
+    private $brightest_state;
+    private $flash_state;
+
+    private $current_state;
+
+    public function __construct()
+    {
+        // init all state
+        $this->on_state = new OnState($this);
+        $this->off_state = new OffState($this);
+        $this->brightest_state = new BrightestState($this);
+        $this->flash_state = new FlashState($this);
+        // default state is offState
+        $this->current_state = $this->off_state;
+        $this->luminance = '0%';
+        $this->getSateInfo();
+    }
+
+    // use trigger methods
+    public function turnOn()
+    {
+        $this->current_state->turnOn();
+        $this->luminance = '80%';
+        $this->getSateInfo();
+    }
+
+    public function turnOff()
+    {
+        $this->current_state->turnOff();
+        $this->luminance = '0%';
+        $this->getSateInfo();
+    }
+
+    public function turnBrightest()
+    {
+        $this->current_state->turnBrightest();
+        $this->luminance = '100%';
+        $this->getSateInfo();
+    }
+
+    public function convertFlash()
+    {
+        $this->current_state->convertFlash();
+        $this->getSateInfo();
+    }
+
+    public function getSateInfo()
+    {
+        echo "luminance:$this->luminance".PHP_EOL;
+        echo 'currentState:'.get_class($this->current_state).PHP_EOL;
+    }
+
+    //// Getter Setter
+    public function setCurrentState(IState $current_state)
+    {
+        $this->current_state = $current_state;
+    }
+
+
+    public function getOnState()
+    {
+        return $this->on_state;
+    }
+
+    public function getOffState()
+    {
+        return $this->off_state;
+    }
+
+    public function getBrightestState()
+    {
+        return $this->brightest_state;
+    }
+
+    public function getFlashState()
+    {
+        return $this->flash_state;
+    }
+
+}
+
+class Client {
+    private $bulb;
+    private $func_list;
+
+    public function __construct(BulbContext $bulb, $rand_times = 0)
+    {
+        $this->bulb = $bulb;
+        $this->func_list = ['turnOn','turnBrightest','convertFlash','turnOff'];
+        if($rand_times === 0){
+            $this->seqTurn();
+        }else {
+            while($rand_times--) {
+                $this->randTurn();
+            }
+        }
+    }
+
+    private function randTurn(){
+        $rand_op = intval($this->randInt(1,4));
+        $func = $this->func_list[$rand_op-1];
+        echo PHP_EOL."operation:$func".PHP_EOL;
+        $this->bulb->$func();
+    }
+
+    private function seqTurn(){
+        foreach ($this->func_list as $func){
+            echo PHP_EOL."operation:$func".PHP_EOL;
+            $this->bulb->$func();
+        }
+    }
+
+    private function randInt($min, $max)
+    {
+        return round (rand() / getrandmax() * ($max - $min) + $min);
+    }
+}
+
+$worker = new Client(new BulbContext());
+//luminance:0%
+//currentState:OffState
+//
+//operation:turnOn
+//light on
+//luminance:80%
+//currentState:OnState
+//
+//operation:turnBrightest
+//light to brightest
+//luminance:100%
+//currentState:BrightestState
+//
+//operation:convertFlash
+//light flashing with brightest light
+//luminance:100%
+//currentState:FlashState
+//
+//operation:turnOff
+//light from flashing to dark .... light off
+//luminance:0%
+//currentState:OffState
+```
+
 - 例2 游戏角色 [PlayerContextState.php](https://github.com/ParrySMS/DesignPatterns/blob/master/PlayerContextState.php)
-
-- 最开始需要加载全部可能状态，运行之后只是做状态转移赋值。（状态类可能有冗余，但是状态转移会简化）
-
-- 一个个状态单纯用作存储用，转换行为在各个状态里有定义，但是触发是用 Context 上下文情境里的方法触发的，所以调用逻辑在 Context 里。
-
-- 可以根据情况再去分类抽象掉 IState 接口，不然如果 state状态实例 可能会有很多不实现的空方法（因为其他的状态不一定都下步可达）。
 
 ```
 [initial state] ---> wait 5 sec ---> [playing state]
@@ -1279,6 +1589,317 @@ $worker = new Client(new JingDongShop());
 [reviving state] ---> wait 3 sec ---> [protected state]
 [protected state] ---> wait 3 sec ---> [playing state]
 ```
+
+
+```php
+<?php
+/**
+ * Created by PhpStorm.
+ * User: L
+ * Date: 2019-8-24
+ * Time: 10:16
+ */
+define('HEALTH_MAX', 100);
+define('HEALTH_MIN', 0);
+define('TIME_GAME_HOLDING', 15);
+define('TIME_INIT', 1);
+define('TIME_REVIVING', 1);
+define('TIME_PROTECTED', 1);
+define('TIME_PLAYING',1);
+define('TIMES_RAND_DAMAGE',1); // P_dead = 5151/10201
+
+abstract Class IGameState
+{
+    abstract public function turnPlaying();
+    abstract public function turnReviving();
+    abstract public function turnProtected();
+}
+
+class PlayerContext
+{
+    public $health;
+    private $initial_state;
+    private $playing_state;
+    private $reviving_state;
+    private $protected_state;
+    private $current_state;
+
+    public function __construct($health = HEALTH_MIN)
+    {
+        $this->initial_state = new InitialState($this);
+        $this->playing_state = new PlayingState($this);
+        $this->reviving_state = new RevivingState($this);
+        $this->protected_state = new ProtectedState($this);
+
+        $this->current_state = $this->initial_state;
+        $this->health = $health;
+    }
+
+    //// some functional PlayerContext methods
+    public function getTimeAndWait($sec)
+    {
+        echo date('H:i:s') . PHP_EOL . PHP_EOL;
+        sleep($sec);
+    }
+
+    public function setRandDamage()
+    {
+        if($this->health>0) {
+            $damage = $this->randInt(HEALTH_MIN, HEALTH_MAX);
+            $this->health -= $damage;
+            echo "Damage:$damage, HP:$this->health" . PHP_EOL;
+        }
+    }
+
+    public function randInt($min, $max)
+    {
+        return round(rand() / getrandmax() * ($max - $min) + $min);
+    }
+
+    public function autoTurning($rand_damage_times = TIMES_RAND_DAMAGE)
+    {
+        $this->start();
+
+        while ($rand_damage_times--){
+            $this->setRandDamage();
+        }
+
+        if(0 > $this->health){
+            $this->dead();
+            $this->beenProtected();
+        }
+    }
+
+    //// use state trigger methods
+    public function start()
+    {
+        $this->current_state->turnPlaying();
+    }
+
+    public function dead()
+    {
+        $this->current_state->turnReviving();
+    }
+
+    public function beenProtected()
+    {
+        $this->current_state->turnProtected();
+    }
+
+    //// setter getter
+    public function setCurrentState($current_state)
+    {
+        $this->current_state = $current_state;
+    }
+
+    public function getCurrentState()
+    {
+        return $this->current_state;
+    }
+
+    public function getInitialState()
+    {
+        return $this->initial_state;
+    }
+
+    public function getPlayingState()
+    {
+        return $this->playing_state;
+    }
+
+    public function getRevivingState()
+    {
+        return $this->reviving_state;
+    }
+
+    public function getProtectedState()
+    {
+        return $this->protected_state;
+    }
+
+}
+
+class InitialState extends IGameState
+{
+    private $context;
+
+    public function __construct(PlayerContext $context)
+    {
+        echo 'Game starting now' . PHP_EOL;
+        $this->context = $context;
+    }
+
+    public function turnPlaying()
+    {
+        echo 'Storm the front. Ok, let\'s go! ' . PHP_EOL;
+        $this->context->getTimeAndWait(TIME_INIT);
+        $this->context->health = HEALTH_MAX;
+        $this->context->setCurrentState($this->context->getPlayingState());
+    }
+
+    public function turnReviving(){}
+    public function turnProtected(){}
+}
+
+class PlayingState extends IGameState
+{
+    private $context;
+
+    private $msg = [
+        'Stick together team. Hold this position.',
+        'Cover me, Cover me, Cover me!',
+        'You take the point. I cover you.',
+        'Fall Back! Fall Back!',
+        'Get in position and wait for my go!',
+        'Storm the front! Go!',
+        'Fire! Fire! Taking fire!'
+        ];
+
+    public function __construct(PlayerContext $context)
+    {
+        $this->context = $context;
+    }
+
+    public function turnPlaying(){
+        $msg_index = intval($this->context->randInt(0,sizeof($this->msg)-1));
+        echo 'Player :'.$this->msg[$msg_index].PHP_EOL;
+        $this->context->getTimeAndWait(TIME_PLAYING);
+    }
+
+    public function turnReviving()
+    {
+        echo 'Taking fire, need assistance! I \'m down.' . PHP_EOL;
+        $this->context->setCurrentState($this->context->getRevivingState());
+    }
+
+    public function turnProtected(){}
+}
+
+class RevivingState extends IGameState
+{
+    private $context;
+
+    public function __construct(PlayerContext $context)
+    {
+        $this->context = $context;
+    }
+
+    public function turnPlaying(){}
+    public function turnReviving(){}
+    public function turnProtected(){
+        echo 'Reviviing...' . PHP_EOL;
+        $this->context->getTimeAndWait(TIME_REVIVING);
+        $this->context->setCurrentState($this->context->getProtectedState());
+    }
+}
+
+class ProtectedState extends IGameState
+{
+    private $context;
+
+    public function __construct(PlayerContext $context)
+    {
+        $this->context = $context;
+    }
+    public function turnReviving(){}
+    public function turnProtected(){}
+    public function turnPlaying(){
+        echo 'Player is invulnerable now.' . PHP_EOL;
+        $this->context->getTimeAndWait(TIME_PROTECTED);
+        echo 'Player is vulnerable now.' . PHP_EOL;
+        $this->context->getTimeAndWait(0);
+        $this->context->health = HEALTH_MAX;
+        $this->context->setCurrentState($this->context->getPlayingState());
+    }
+}
+
+class Client
+{
+    private $context;
+
+    public function __construct(PlayerContext $context)
+    {
+        $this->context = $context;
+        $this->startGame();
+    }
+
+    private function startGame($sec = TIME_GAME_HOLDING)
+    {
+        $this->context->start();
+        $start = time();
+        while (1) {
+            $this->context->autoTurning();
+            sleep(TIME_PLAYING);
+            if(time()-$start > $sec){
+                break;
+            }
+        }
+        echo 'Game End'.PHP_EOL;
+    }
+}
+
+$worker = new Client(new PlayerContext());
+//Game starting now
+//Storm the front. Ok, let's go!
+//15:26:21
+//
+//Player :You take the point. I cover you.
+//15:26:22
+//
+//Damage:81, HP:19
+//Player :Get in position and wait for my go!
+//15:26:24
+//
+//Damage:47, HP:-28
+//Taking fire, need assistance! I 'm down.
+//Reviviing...
+//15:26:25
+//
+//Player is invulnerable now.
+//15:26:27
+//
+//Player is vulnerable now.
+//15:26:28
+//
+//Damage:70, HP:30
+//Player :Stick together team. Hold this position.
+//15:26:29
+//
+//Damage:91, HP:-61
+//Taking fire, need assistance! I 'm down.
+//Reviviing...
+//15:26:30
+//
+//Player is invulnerable now.
+//15:26:32
+//
+//Player is vulnerable now.
+//15:26:33
+//
+//Damage:36, HP:64
+//Player :Get in position and wait for my go!
+//15:26:34
+//
+//Damage:85, HP:-21
+//Taking fire, need assistance! I 'm down.
+//Reviviing...
+//15:26:35
+//
+//Player is invulnerable now.
+//15:26:37
+//
+//Player is vulnerable now.
+//15:26:38
+//
+//Damage:42, HP:58
+//Game End
+```
+
+- 最开始需要加载全部可能状态，运行之后只是做状态转移赋值。（状态类可能有冗余，但是状态转移会简化）
+
+- 一个个状态单纯用作存储用，转换行为在各个状态里有定义，但是触发是用 Context 上下文情境里的方法触发的，所以调用逻辑在 Context 里。
+
+- 可以根据情况再去分类抽象掉 IState 接口，不然如果 state状态实例 可能会有很多不实现的空方法（因为其他的状态不一定都下步可达）。
 
 ![contextState](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/contextState.png)
 
