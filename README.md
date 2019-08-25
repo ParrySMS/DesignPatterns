@@ -1906,3 +1906,16 @@ $worker = new Client(new PlayerContext());
 
 ### MySQL相关设计模式
 
+- 代理 (Proxy)
+
+- 策略 (Strategy)
+
+- 职责链 (Chain of Responsibility)
+
+- 观察者 (Observer)
+
+- 通用DB连接类和静态变量
+	- 接口常量用来存连接配置
+	- 尽量避免全局变量，因为可能会破坏封装，可以用静态取代
+	- 作者认为，真正正确的单例模式就相当于全局变量
+- //todo []()
