@@ -4,7 +4,6 @@
 interface IWeaponPrototype
 {
     public function MouseLeftClickAttack();
-
     public function MouseRightClickAttack();
 }
 
@@ -41,9 +40,7 @@ class Knife implements IWeaponPrototype
 interface IShieldPrototype
 {
     public function pushing();
-
     public function cover();
-
     public function remove();
 }
 
@@ -107,7 +104,7 @@ class ShieldAdapter implements IWeaponPrototype
     public $durability;
     private $shield;
 
-    public function __construct(IShieldPrototype $shield)
+    public function __construct(RectangleShield $shield)
     {
         $this->shield = $shield;
         $this->color = $shield->color;

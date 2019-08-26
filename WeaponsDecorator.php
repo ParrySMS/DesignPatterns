@@ -1,4 +1,5 @@
 <?php
+
 //use abstract class but not interface for these elements in common
 abstract class IWeapon
 {
@@ -6,21 +7,24 @@ abstract class IWeapon
     protected $bullet;
     protected $damage;
     protected $sound;
+
     abstract public function setColor($color);
     abstract public function MouseLeftClickAttack();
     abstract public function MouseRightClickAttack();
-	abstract public function getFeatures();
+    abstract public function getFeatures();
 }
 
 abstract class WeaponsDecorator extends IWeapon
 {
     //some regular function not changed is able to implement in Decorator
-    public function setColor($color){
-        $this->color =  $color;
+    public function setColor($color)
+    {
+        $this->color = $color;
     }
+
     abstract public function MouseLeftClickAttack();
     abstract public function MouseRightClickAttack();
-	abstract public function getFeatures();
+    abstract public function getFeatures();
 }
 
 // MainWeapon and SubWeapon are two different Component
@@ -32,16 +36,17 @@ class MainWeapon extends IWeapon
         $this->bullet = $bullet;
         $this->damage = $damage;
         $this->sound = $sound;
-		$this->setColor();
-		echo 'MainWeapon original getFeatures()'. PHP_EOL;
+        $this->setColor();
+        echo 'MainWeapon original getFeatures()' . PHP_EOL;
         $this->getFeatures();
-		echo 'MainWeapon:__construct end'. PHP_EOL;
+        echo 'MainWeapon:__construct end' . PHP_EOL;
     }
-	
-    public function setColor($color = 'black'){
-        $this->color =  $color;
+
+    public function setColor($color = 'black')
+    {
+        $this->color = $color;
     }
-	
+
     public function MouseLeftClickAttack()
     {
         if ($this->bullet > 0) {
@@ -57,11 +62,12 @@ class MainWeapon extends IWeapon
     {
         echo 'using scope to aim' . PHP_EOL;
     }
-	
-	public function getFeatures(){		
+
+    public function getFeatures()
+    {
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to aim
-	}
+    }
 }
 
 class SubWeapon extends IWeapon
@@ -78,11 +84,12 @@ class SubWeapon extends IWeapon
         $this->sound = $this::SOUND_BASIC;
         $this->isUsingSilencer = $isUsingSilencer;
         $this->setColor();
-        
+
     }
 
-    public function setColor($color = 'silver'){
-        $this->color =  $color;
+    public function setColor($color = 'silver')
+    {
+        $this->color = $color;
     }
 
     public function MouseLeftClickAttack()
@@ -106,67 +113,70 @@ class SubWeapon extends IWeapon
             $this->sound = $this::SOUND_WITH_SILENCER;
         }
     }
-	
-	public function getFeatures(){		
+
+    public function getFeatures()
+    {
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to use/cancel silencer
         $this->MouseLeftClickAttack();    //shoot again
         $this->MouseRightClickAttack();
-	}
+    }
 }
 
 // Decorator add fire buff
 class FireBuff extends WeaponsDecorator
 {
-	const DAMAGE_RATIO_FIRE_BUFF_SHOOT = 1.85;
-	const DAMAGE_RATIO_FIRE_BUFF_SKILL = 16;
-	const BULLET_FIRE_BUFF_SHOOT_COST = 1;
-	const BULLET_FIRE_BUFF_SKILL_COST = 6;
-	private $weapon;
+    const DAMAGE_RATIO_FIRE_BUFF_SHOOT = 1.85;
+    const DAMAGE_RATIO_FIRE_BUFF_SKILL = 16;
+    const BULLET_FIRE_BUFF_SHOOT_COST = 1;
+    const BULLET_FIRE_BUFF_SKILL_COST = 6;
+    private $weapon;
     protected $fireBuffBullet;
-	
-	// save the constructing $weapon instance then add more features
-	// most var is using from $this->weapon 
+
+    // save the constructing $weapon instance then add more features
+    // most var is using from $this->weapon
     public function __construct(IWeapon $weapon)
     {
-		echo 'WeaponsDecorator: fire-buff' . PHP_EOL;
-		$this->weapon = $weapon;
+        echo 'WeaponsDecorator: fire-buff' . PHP_EOL;
+        $this->weapon = $weapon;
         $this->fireBuffBullet = 100;
     }
-	
-	public function setFireBuffBullet($buffBulletNum){
-		$this->fireBuffBullet = $buffBulletNum;
-	}
+
+    public function setFireBuffBullet($buffBulletNum)
+    {
+        $this->fireBuffBullet = $buffBulletNum;
+    }
 
     public function MouseLeftClickAttack()
     {
         if ($this->fireBuffBullet > 0) {
             echo 'shoot a fire-bullet, damage is ';
-			echo $this::DAMAGE_RATIO_FIRE_BUFF_SHOOT * $this->weapon->damage . PHP_EOL;
-            echo 'Gunshots could be heard as ' .$this->weapon->sound . PHP_EOL;
-			$this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SHOOT_COST;
+            echo $this::DAMAGE_RATIO_FIRE_BUFF_SHOOT * $this->weapon->damage . PHP_EOL;
+            echo 'Gunshots could be heard as ' . $this->weapon->sound . PHP_EOL;
+            $this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SHOOT_COST;
         } else {
-			$this->weapon->MouseLeftClickAttack();
-		} 
-	}
-	
-	public function MouseRightClickAttack()
+            $this->weapon->MouseLeftClickAttack();
+        }
+    }
+
+    public function MouseRightClickAttack()
     {
-		$this->weapon->MouseRightClickAttack();
-		
-        if ($this->fireBuffBullet >  $this::BULLET_FIRE_BUFF_SKILL_COST) {
-			echo 'use fire-buff skill, damage is ';  
-			echo $this::DAMAGE_RATIO_FIRE_BUFF_SKILL * $this->weapon->damage . PHP_EOL;
-			$this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SKILL_COST;
-		}else {
+        $this->weapon->MouseRightClickAttack();
+
+        if ($this->fireBuffBullet > $this::BULLET_FIRE_BUFF_SKILL_COST) {
+            echo 'use fire-buff skill, damage is ';
+            echo $this::DAMAGE_RATIO_FIRE_BUFF_SKILL * $this->weapon->damage . PHP_EOL;
+            $this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SKILL_COST;
+        } else {
             echo 'not enough fireBuffBullet to use fire-buff skill' . PHP_EOL;
         }
     }
-	
-	public function getFeatures(){		
-		$this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-		$this->MouseLeftClickAttack();    
+
+    public function getFeatures()
+    {
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+        $this->MouseLeftClickAttack();
         $this->MouseRightClickAttack();
     }
 }
@@ -174,16 +184,17 @@ class FireBuff extends WeaponsDecorator
 // Decorator add auto-reloading
 class AutoReloading extends WeaponsDecorator
 {
-	private $weapon;
-	protected $reloadBulletNum = 30;
-	//save the constructing $weapon instance then add more features
+    private $weapon;
+    protected $reloadBulletNum = 30;
+
+    //save the constructing $weapon instance then add more features
     public function __construct(IWeapon $weapon)
     {
-		echo 'WeaponsDecorator: auto reloading' . PHP_EOL;
-		$this->weapon = $weapon;
+        echo 'WeaponsDecorator: auto reloading' . PHP_EOL;
+        $this->weapon = $weapon;
     }
-	
-	// no implement
+
+    // no implement
     public function MouseLeftClickAttack()
     {
         $this->weapon->MouseLeftClickAttack();
@@ -191,39 +202,41 @@ class AutoReloading extends WeaponsDecorator
 
     public function MouseRightClickAttack()
     {
-		if($this->weapon->bullet == 0){
-			$this->weapon->bullet += $this->reloadBulletNum;
-		}
-		
+        if ($this->weapon->bullet == 0) {
+            $this->weapon->bullet += $this->reloadBulletNum;
+        }
+
         $this->weapon->MouseRightClickAttack();
     }
-	
-	public function getFeatures(){		
-        $this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-		$this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-	}
+
+    public function getFeatures()
+    {
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+    }
 }
 
 class Client
 {
-	private $weapon;
-	public function __construct(IWeapon $weapon)
+    private $weapon;
+
+    public function __construct(IWeapon $weapon)
     {
-		$this->weapon = $weapon;
-		$this->weapon = $this->wrapComponent($this->weapon);
-		$this->weapon->getFeatures();
-	}
-	
-	private function wrapComponent(IWeapon $weapon)
-	{
-		$component = new FireBuff($weapon);
-		$component->setFireBuffBullet(8);
-		//$component->setFireBuffBullet(3);
-		$component = new AutoReloading($component);
-		return $component;
-	}
+        $this->weapon = $weapon;
+        $this->weapon = $this->wrapComponent($this->weapon);
+        $this->weapon->getFeatures();
+    }
+
+    private function wrapComponent(IWeapon $weapon)
+    {
+        $component = new FireBuff($weapon);
+        $component->setFireBuffBullet(8);
+        //$component->setFireBuffBullet(3);
+        $component = new AutoReloading($component);
+        return $component;
+    }
 }
 
 $worker = new Client(new MainWeapon(2));
