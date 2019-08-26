@@ -599,7 +599,6 @@ $worker = new Client($product_price, $service_price);
 interface IWeaponPrototype
 {
     public function MouseLeftClickAttack();
-
     public function MouseRightClickAttack();
 }
 
@@ -636,9 +635,7 @@ class Knife implements IWeaponPrototype
 interface IShieldPrototype
 {
     public function pushing();
-
     public function cover();
-
     public function remove();
 }
 
@@ -702,7 +699,7 @@ class ShieldAdapter implements IWeaponPrototype
     public $durability;
     private $shield;
 
-    public function __construct(IShieldPrototype $shield)
+    public function __construct(RectangleShield $shield)
     {
         $this->shield = $shield;
         $this->color = $shield->color;
@@ -797,6 +794,7 @@ $worker = new Client();
 
 ```php
 <?php
+
 //use abstract class but not interface for these elements in common
 abstract class IWeapon
 {
@@ -804,21 +802,24 @@ abstract class IWeapon
     protected $bullet;
     protected $damage;
     protected $sound;
+
     abstract public function setColor($color);
     abstract public function MouseLeftClickAttack();
     abstract public function MouseRightClickAttack();
-	abstract public function getFeatures();
+    abstract public function getFeatures();
 }
 
 abstract class WeaponsDecorator extends IWeapon
 {
     //some regular function not changed is able to implement in Decorator
-    public function setColor($color){
-        $this->color =  $color;
+    public function setColor($color)
+    {
+        $this->color = $color;
     }
+
     abstract public function MouseLeftClickAttack();
     abstract public function MouseRightClickAttack();
-	abstract public function getFeatures();
+    abstract public function getFeatures();
 }
 
 // MainWeapon and SubWeapon are two different Component
@@ -830,16 +831,17 @@ class MainWeapon extends IWeapon
         $this->bullet = $bullet;
         $this->damage = $damage;
         $this->sound = $sound;
-		$this->setColor();
-		echo 'MainWeapon original getFeatures()'. PHP_EOL;
+        $this->setColor();
+        echo 'MainWeapon original getFeatures()' . PHP_EOL;
         $this->getFeatures();
-		echo 'MainWeapon:__construct end'. PHP_EOL;
+        echo 'MainWeapon:__construct end' . PHP_EOL;
     }
-	
-    public function setColor($color = 'black'){
-        $this->color =  $color;
+
+    public function setColor($color = 'black')
+    {
+        $this->color = $color;
     }
-	
+
     public function MouseLeftClickAttack()
     {
         if ($this->bullet > 0) {
@@ -855,11 +857,12 @@ class MainWeapon extends IWeapon
     {
         echo 'using scope to aim' . PHP_EOL;
     }
-	
-	public function getFeatures(){		
+
+    public function getFeatures()
+    {
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to aim
-	}
+    }
 }
 
 class SubWeapon extends IWeapon
@@ -876,11 +879,12 @@ class SubWeapon extends IWeapon
         $this->sound = $this::SOUND_BASIC;
         $this->isUsingSilencer = $isUsingSilencer;
         $this->setColor();
-        
+
     }
 
-    public function setColor($color = 'silver'){
-        $this->color =  $color;
+    public function setColor($color = 'silver')
+    {
+        $this->color = $color;
     }
 
     public function MouseLeftClickAttack()
@@ -904,67 +908,70 @@ class SubWeapon extends IWeapon
             $this->sound = $this::SOUND_WITH_SILENCER;
         }
     }
-	
-	public function getFeatures(){		
+
+    public function getFeatures()
+    {
         $this->MouseLeftClickAttack();    //LeftClick to shoot
         $this->MouseRightClickAttack(); //RightClick to use/cancel silencer
         $this->MouseLeftClickAttack();    //shoot again
         $this->MouseRightClickAttack();
-	}
+    }
 }
 
 // Decorator add fire buff
 class FireBuff extends WeaponsDecorator
 {
-	const DAMAGE_RATIO_FIRE_BUFF_SHOOT = 1.85;
-	const DAMAGE_RATIO_FIRE_BUFF_SKILL = 16;
-	const BULLET_FIRE_BUFF_SHOOT_COST = 1;
-	const BULLET_FIRE_BUFF_SKILL_COST = 6;
-	private $weapon;
+    const DAMAGE_RATIO_FIRE_BUFF_SHOOT = 1.85;
+    const DAMAGE_RATIO_FIRE_BUFF_SKILL = 16;
+    const BULLET_FIRE_BUFF_SHOOT_COST = 1;
+    const BULLET_FIRE_BUFF_SKILL_COST = 6;
+    private $weapon;
     protected $fireBuffBullet;
-	
-	// save the constructing $weapon instance then add more features
-	// most var is using from $this->weapon 
+
+    // save the constructing $weapon instance then add more features
+    // most var is using from $this->weapon
     public function __construct(IWeapon $weapon)
     {
-		echo 'WeaponsDecorator: fire-buff' . PHP_EOL;
-		$this->weapon = $weapon;
+        echo 'WeaponsDecorator: fire-buff' . PHP_EOL;
+        $this->weapon = $weapon;
         $this->fireBuffBullet = 100;
     }
-	
-	public function setFireBuffBullet($buffBulletNum){
-		$this->fireBuffBullet = $buffBulletNum;
-	}
+
+    public function setFireBuffBullet($buffBulletNum)
+    {
+        $this->fireBuffBullet = $buffBulletNum;
+    }
 
     public function MouseLeftClickAttack()
     {
         if ($this->fireBuffBullet > 0) {
             echo 'shoot a fire-bullet, damage is ';
-			echo $this::DAMAGE_RATIO_FIRE_BUFF_SHOOT * $this->weapon->damage . PHP_EOL;
-            echo 'Gunshots could be heard as ' .$this->weapon->sound . PHP_EOL;
-			$this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SHOOT_COST;
+            echo $this::DAMAGE_RATIO_FIRE_BUFF_SHOOT * $this->weapon->damage . PHP_EOL;
+            echo 'Gunshots could be heard as ' . $this->weapon->sound . PHP_EOL;
+            $this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SHOOT_COST;
         } else {
-			$this->weapon->MouseLeftClickAttack();
-		} 
-	}
-	
-	public function MouseRightClickAttack()
+            $this->weapon->MouseLeftClickAttack();
+        }
+    }
+
+    public function MouseRightClickAttack()
     {
-		$this->weapon->MouseRightClickAttack();
-		
-        if ($this->fireBuffBullet >  $this::BULLET_FIRE_BUFF_SKILL_COST) {
-			echo 'use fire-buff skill, damage is ';  
-			echo $this::DAMAGE_RATIO_FIRE_BUFF_SKILL * $this->weapon->damage . PHP_EOL;
-			$this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SKILL_COST;
-		}else {
+        $this->weapon->MouseRightClickAttack();
+
+        if ($this->fireBuffBullet > $this::BULLET_FIRE_BUFF_SKILL_COST) {
+            echo 'use fire-buff skill, damage is ';
+            echo $this::DAMAGE_RATIO_FIRE_BUFF_SKILL * $this->weapon->damage . PHP_EOL;
+            $this->fireBuffBullet -= $this::BULLET_FIRE_BUFF_SKILL_COST;
+        } else {
             echo 'not enough fireBuffBullet to use fire-buff skill' . PHP_EOL;
         }
     }
-	
-	public function getFeatures(){		
-		$this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-		$this->MouseLeftClickAttack();    
+
+    public function getFeatures()
+    {
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+        $this->MouseLeftClickAttack();
         $this->MouseRightClickAttack();
     }
 }
@@ -972,16 +979,17 @@ class FireBuff extends WeaponsDecorator
 // Decorator add auto-reloading
 class AutoReloading extends WeaponsDecorator
 {
-	private $weapon;
-	protected $reloadBulletNum = 30;
-	//save the constructing $weapon instance then add more features
+    private $weapon;
+    protected $reloadBulletNum = 30;
+
+    //save the constructing $weapon instance then add more features
     public function __construct(IWeapon $weapon)
     {
-		echo 'WeaponsDecorator: auto reloading' . PHP_EOL;
-		$this->weapon = $weapon;
+        echo 'WeaponsDecorator: auto reloading' . PHP_EOL;
+        $this->weapon = $weapon;
     }
-	
-	// no implement
+
+    // no implement
     public function MouseLeftClickAttack()
     {
         $this->weapon->MouseLeftClickAttack();
@@ -989,39 +997,41 @@ class AutoReloading extends WeaponsDecorator
 
     public function MouseRightClickAttack()
     {
-		if($this->weapon->bullet == 0){
-			$this->weapon->bullet += $this->reloadBulletNum;
-		}
-		
+        if ($this->weapon->bullet == 0) {
+            $this->weapon->bullet += $this->reloadBulletNum;
+        }
+
         $this->weapon->MouseRightClickAttack();
     }
-	
-	public function getFeatures(){		
-        $this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-		$this->MouseLeftClickAttack();    
-        $this->MouseRightClickAttack(); 
-	}
+
+    public function getFeatures()
+    {
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+        $this->MouseLeftClickAttack();
+        $this->MouseRightClickAttack();
+    }
 }
 
 class Client
 {
-	private $weapon;
-	public function __construct(IWeapon $weapon)
+    private $weapon;
+
+    public function __construct(IWeapon $weapon)
     {
-		$this->weapon = $weapon;
-		$this->weapon = $this->wrapComponent($this->weapon);
-		$this->weapon->getFeatures();
-	}
-	
-	private function wrapComponent(IWeapon $weapon)
-	{
-		$component = new FireBuff($weapon);
-		$component->setFireBuffBullet(8);
-		//$component->setFireBuffBullet(3);
-		$component = new AutoReloading($component);
-		return $component;
-	}
+        $this->weapon = $weapon;
+        $this->weapon = $this->wrapComponent($this->weapon);
+        $this->weapon->getFeatures();
+    }
+
+    private function wrapComponent(IWeapon $weapon)
+    {
+        $component = new FireBuff($weapon);
+        $component->setFireBuffBullet(8);
+        //$component->setFireBuffBullet(3);
+        $component = new AutoReloading($component);
+        return $component;
+    }
 }
 
 $worker = new Client(new MainWeapon(2));
@@ -1918,4 +1928,146 @@ $worker = new Client(new PlayerContext());
 	- 接口常量用来存连接配置
 	- 尽量避免全局变量，因为可能会破坏封装，可以用静态取代
 	- 作者认为，真正正确的单例模式就相当于全局变量
-- //todo []()
+	- 书中 P216-218 代码有误，应当声明 `doConnect()` 为静态，修正代码如下：
+	- DB连接类的静态方法和静态变量 [DBConnect.php](https://github.com/ParrySMS/DesignPatterns/blob/master/DBConnect.php)
+
+```php
+<?php
+
+interface IConnectInfo
+{
+    const DBTYPE = 'mysql';
+    const HOST = 'localhost';
+    const UNAME = 'root';
+    const PASSWORD = 'password';
+    const DBNAME = 'testdb';
+    static public function connect();
+}
+
+//// Two diff Connection
+class PDOConnect implements IConnectInfo
+{
+    private static $server = IConnectInfo::HOST;
+    private static $DBType = IConnectInfo::DBTYPE;
+    private static $DBName = IConnectInfo::DBNAME;
+    private static $username = IConnectInfo::UNAME;
+    private static $password = IConnectInfo::PASSWORD;
+    private static $hookup;
+
+    static public function connect()
+    {
+        $dsn = self::$DBType . ':host=' . self::$server . 'dbname=' . self::$DBName;
+        self::$hookup = new PDO($dsn, self::$username, self::$password, [PDO::ATTR_PERSISTENT => true]);
+        // throw PDOExcetion if error
+        return self::$hookup;
+    }
+}
+
+class MysqliConnect implements IConnectInfo
+{
+    private static $server = IConnectInfo::HOST;
+    private static $DBName = IConnectInfo::DBNAME;
+    private static $username = IConnectInfo::UNAME;
+    private static $password = IConnectInfo::PASSWORD;
+    private static $hookup;
+
+    /**
+     * use static method to avoid create instance of  MysqliConnect over and over again
+     * @return false|mysqli
+     * @throws Exception
+     */
+    static public function connect()
+    {
+        self::$hookup = mysqli_connect(self::$server, self::$username, self::$password, self::$DBName);
+        if (!self::$hookup) {
+            throw new Exception('connect failed:' . mysqli_connect_error());
+        }
+        return self::$hookup;
+    }
+}
+
+//// Two diff Clients
+class PDOClient
+{
+    private $hookup;
+    public function __construct()
+    {
+        // just use it without details about connecting
+        $this->hookup = PDOConnect::connect();
+    }
+
+    public function __destruct()
+    {
+        unset($this->hookup);
+    }
+    public function getData($limit = 3)
+    {
+        if (!is_numeric($limit) || $limit == 0) {
+            throw new Exception('limit param error');
+        }
+        $sql = "SELECT 'id','name', 'address',  FROM 'table' LIMIT $limit";
+        $stmt = $this->hookup->query($sql);
+        foreach ($stmt as $row){
+            echo "id:{$row['id']}, name:{$row['name']}, address:{$row['address']});" . PHP_EOL;
+        }
+    }
+}
+
+class MysqliClient
+{
+    private $hookup;
+
+    public function __construct()
+    {
+        $this->hookup = MysqliConnect::connect();
+    }
+
+    public function __destruct()
+    {
+        $this->hookup->close();
+    }
+
+    public function getData($limit = 3)
+    {
+        if (!is_numeric($limit) || $limit == 0) {
+            throw new Exception('limit param error');
+        }
+        $sql = "SELECT 'id','name', 'address',  FROM 'table' LIMIT $limit";
+        $stmt = $this->hookup->prepare($sql);
+        if (!$stmt) {
+            throw new Exception('stmt prepare error');
+        }
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($id, $name, $address);
+        while ($stmt->fetch()) {
+            echo "id:$id, name:$name, address:$address);" . PHP_EOL;
+        }
+    }
+}
+
+//// worker
+try {
+    $worker1 = new MysqliClient();
+    $worker1->getData();
+
+    $worker2 = new PDOClient();
+    $worker2->getData();
+
+}catch (Exception $e){
+    echo $e->getMessage();
+}
+```
+
+- 代理模式：保护代理完成登录
+    - 结构型设计模式
+        - 远程代理 remote：两个不同的地址空间
+        - 虚拟代理 virtual ：缓存真实主题
+        - 保护代理 protection ：权限
+        - 智能引用 smart reference ：引用对象时完成额外的操作
+    - 参与者：代理主题 proxy subject 以及 真实主题 real subject， 客户通过代理来操作
+
+![proxy](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/proxy.jpg)
+
+
+
