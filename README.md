@@ -1914,7 +1914,7 @@ $worker = new Client(new PlayerContext());
 ![contextState](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/contextState.png)
 
 
-### MySQL相关设计模式
+## PART5 MySQL相关设计模式
 
 - 代理 (Proxy)
 
@@ -1923,6 +1923,8 @@ $worker = new Client(new PlayerContext());
 - 职责链 (Chain of Responsibility)
 
 - 观察者 (Observer)
+
+### 代理 (Proxy)
 
 - 通用DB连接类和静态变量
 	- 接口常量用来存连接配置
@@ -2070,4 +2072,9 @@ try {
 ![proxy](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/proxy.jpg)
 
 
+（跳跃章节）
 
+### 职责链模式
+
+- 避免请求者和接收者的耦合: 发送者不需要指定哪个对象来处理，对象也不需要知道哪个对象发送
+- 可以灵活调整中间处理器的顺序以及实现内容
