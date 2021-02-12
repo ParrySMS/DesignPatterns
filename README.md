@@ -2,21 +2,23 @@
 
 ## 简洁版本：[README_NO_CODE.md](https://github.com/ParrySMS/DesignPatterns/blob/master/README_NO_CODE.md)
 
-长代码块放置外链，由文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
+- 长代码块放置外链
+
+- 由文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
 
 - [PART1 基础](#part1-基础)   
-- [PART2 创建型设计模式](#part2-创建型设计模式)      
-    - [工厂方法模式 Factory Method](#工厂方法模式-factory-method)      
-    - [原型设计模式 Prototype](#原型设计模式-prototype)  
-- [PART3 结构型设计模式](#part3-结构型设计模式)        
-    - [使用继承的类适配器模式](#使用继承的类适配器模式)        
-    - [使用组合的对象适配器模式](#使用组合的对象适配器模式)       
-    - [装饰器模式 Decorator](#装饰器模式-decorator)  
-- [PART4 行为型设计模式](#part4-行为型设计模式)        
-    - [模板方法模式  Template Method](#模板方法模式--template-method)        
-    - [状态设计模式 State](#状态设计模式-state)    
-- [PART5 MySQL相关设计模式](#part5-mysql相关设计模式)        
-    - [代理 (Proxy)](#代理-proxy)        
+- [PART2 创建型设计模式](#part2-创建型设计模式)
+    - [工厂方法模式 Factory Method](#工厂方法模式-factory-method)
+    - [原型设计模式 Prototype](#原型设计模式-prototype)
+- [PART3 结构型设计模式](#part3-结构型设计模式)
+    - [使用继承的类适配器模式](#使用继承的类适配器模式)
+    - [使用组合的对象适配器模式](#使用组合的对象适配器模式)
+    - [装饰器模式 Decorator](#装饰器模式-decorator)
+- [PART4 行为型设计模式](#part4-行为型设计模式)
+    - [模板方法模式  Template Method](#模板方法模式--template-method)
+    - [状态设计模式 State](#状态设计模式-state)
+- [PART5 MySQL相关设计模式](#part5-mysql相关设计模式)
+    - [代理 (Proxy)](#代理-proxy)
     - [职责链模式](#职责链模式)
 
 ## PART1 基础
