@@ -2,9 +2,23 @@
 
 ## 简洁版本：[README_NO_CODE.md](https://github.com/ParrySMS/DesignPatterns/blob/master/README_NO_CODE.md)
 
-- 长代码块放置外链
+长代码块放置外链,文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
 
-- 由文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
+
+- [PART1 基础](#part1-基础)   
+- [PART2 创建型设计模式](#part2-创建型设计模式)
+    - [工厂方法模式 Factory Method](#工厂方法模式-factory-method)
+    - [原型设计模式 Prototype](#原型设计模式-prototype)
+- [PART3 结构型设计模式](#part3-结构型设计模式)
+    - [使用继承的类适配器模式](#使用继承的类适配器模式)
+    - [使用组合的对象适配器模式](#使用组合的对象适配器模式)
+    - [装饰器模式 Decorator](#装饰器模式-decorator)
+- [PART4 行为型设计模式](#part4-行为型设计模式)
+    - [模板方法模式  Template Method](#模板方法模式--template-method)
+    - [状态设计模式 State](#状态设计模式-state)
+- [PART5 MySQL相关设计模式](#part5-mysql相关设计模式)
+    - [代理 (Proxy)](#代理-proxy)
+    - [职责链模式](#职责链模式)
 
 ## PART1 基础
 
@@ -238,5 +252,39 @@ $myObj = new $className($params);
 ![contextState](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/contextState.png)
 
 
-### MySQL相关设计模式
+## PART5 MySQL相关设计模式
 
+- 代理 (Proxy)
+
+- 策略 (Strategy)
+
+- 职责链 (Chain of Responsibility)
+
+- 观察者 (Observer)
+
+### 代理 (Proxy)
+
+- 通用DB连接类和静态变量
+	- 接口常量用来存连接配置
+	- 尽量避免全局变量，因为可能会破坏封装，可以用静态取代
+	- 作者认为，真正正确的单例模式就相当于全局变量
+	- 书中 P216-218 代码有误，应当声明 `doConnect()` 为静态，修正代码如下：
+	- DB连接类的静态方法和静态变量 [DBConnect.php](https://github.com/ParrySMS/DesignPatterns/blob/master/DBConnect.php)
+
+
+- 代理模式：保护代理完成登录
+    - 结构型设计模式
+        - 远程代理 remote：两个不同的地址空间
+        - 虚拟代理 virtual ：缓存真实主题
+        - 保护代理 protection ：权限
+        - 智能引用 smart reference ：引用对象时完成额外的操作
+    - 参与者：代理主题 proxy subject 以及 真实主题 real subject， 客户通过代理来操作
+
+![proxy](https://raw.githubusercontent.com/ParrySMS/DesignPatterns/master/assets/proxy.jpg)
+
+
+（跳跃章节）
+
+### 职责链模式
+
+- 避免请求者和接收者的耦合: 发送者不需要指定哪个对象来处理，对象也不需要知道哪个对象发送

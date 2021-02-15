@@ -2,9 +2,8 @@
 
 ## 简洁版本：[README_NO_CODE.md](https://github.com/ParrySMS/DesignPatterns/blob/master/README_NO_CODE.md)
 
-- 长代码块放置外链
+长代码块放置外链,文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
 
-- 由文档经 [rmCodeInMd.php](https://github.com/ParrySMS/DesignPatterns/blob/master/rmCodeInMd.php) 处理生成
 
 - [PART1 基础](#part1-基础)   
 - [PART2 创建型设计模式](#part2-创建型设计模式)
